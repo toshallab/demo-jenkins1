@@ -1,0 +1,71 @@
+peline {
+    agent any
+        tools {nodejs "demonodejs"}
+	    environment {
+	            node_env= "production"
+		        }
+
+			    stages {
+			            stage('Dev') {
+				                steps {
+						                git 'https://github.com/toshallab/demo-jenkins1.git'
+								                echo "index.js file content "
+										                sh 'cat index.js'
+												                sh 'ldd --version'
+														            }
+															            }
+																            stage ('build') {
+																	                environment{
+																			                node_env= "staging"
+																					            }
+																						                steps {
+																								            echo node_env
+																									                withCredentials([string(credentialsId: 'dc8c7867-781a-4d51-a0e8-358ab3328c0b', variable: 'secretvar')]) {
+																											                // some block
+																													                echo secretvar
+																															}
+																															            sh 'npm install'    
+																																                }
+																																		        }
+																																			        stage ('saveartifacts') {
+																																				            steps {
+																																					                archiveArtifacts artifacts: '**', followSymlinks: false    
+																																							            }
+																																								            }
+																																									        }
+																																										}pipeline {
+    agent any
+    tools {nodejs "demonodejs"}
+    environment {
+        node_env= "production"
+    }
+
+    stages {
+        stage('Dev') {
+            steps {
+                git 'https://github.com/toshallab/demo-jenkins1.git'
+                echo "index.js file content "
+                sh 'cat index.js'
+                sh 'ldd --version'
+            }
+        }
+        stage ('build') {
+            environment{
+                node_env= "staging"
+            }
+            steps {
+            echo node_env
+            withCredentials([string(credentialsId: 'dc8c7867-781a-4d51-a0e8-358ab3328c0b', variable: 'secretvar')]) {
+                // some block
+                echo secretvar
+}
+            sh 'npm install'    
+            }
+        }
+        stage ('saveartifacts') {
+            steps {
+            archiveArtifacts artifacts: '**', followSymlinks: false    
+            }
+        }
+    }
+}
